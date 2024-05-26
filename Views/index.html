@@ -3,44 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Congratulations Page</title>
+    <title>Login Form</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(to right, #4a69bb, #283c86);
-            color: #fff;
-            text-align: center;
-            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
 
-        .container {
-            max-width: 600px;
+        .login-container {
+            background-color: #fff;
             padding: 40px;
-            background-color: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
         }
 
-        h1 {
-            color: #4a69bb;
-        }
-
-        p {
+        .login-container h2 {
+            margin-bottom: 20px;
             color: #333;
+        }
+
+        .login-container label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .login-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .login-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #2E5CAA;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .login-container button:hover {
+            background-color: #1e4c8c;
         }
     </style>
 </head>
 <body>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form id="loginForm" action="/api/accounts/login" method="post">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
 
-<div class="container">
-    <h1>Congratulations!</h1>
-    <p>You have successfully created @ngtv/create-node-app</p>
-</div>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
 
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const loginForm = document.getElementById('loginForm');
+
+            loginForm.addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                const formData = new FormData(loginForm);
+                const username = formData.get('username');
+                const password = formData.get('password');
+
+                try {
+                    const response = await fetch(loginForm.action, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ username, password })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        // Handle successful login
+                        console.log('Login successful:', data);
+                        // Redirect or show success message, etc.
+                        // Set cookie based on user role
+                        document.cookie = `page=${data.data.role}`;
+
+                        // store details in local storage
+                        localStorage.setItem('user_details', JSON.stringify(data.data));
+
+                        window.location.href = '/dashboard';
+                    } else {
+                        // Handle errors
+                        console.error('Login failed:', data);
+                        // Display error message to the user, etc.
+                    }
+                } catch (error) {
+                    console.error('Error during login:', error);
+                    // Handle network errors, etc.
+                }
+            });
+        });
+    </script>
 </body>
 </html>

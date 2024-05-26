@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperAdmin Dashboard</title>
+    <style>
+        /* Existing styles */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        .header {
+            background-color: #fff;
+            color: #2E5CAA;
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 3px solid #2E5CAA;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2em;
+            font-weight: normal;
+        }
+
+        .header p {
+            margin: 5px 0 0;
+            font-size: 1.1em;
+            font-weight: 300;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .nav {
+            width: 200px;
+            background-color: #2E5CAA;
+            padding-top: 20px;
+            height: 100vh;
+            position: fixed;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav a {
+            padding: 15px 20px;
+            text-decoration: none;
+            font-size: 16px;
+            color: white;
+            display: block;
+            transition: background-color 0.3s;
+        }
+
+        .nav a:hover {
+            background-color: #1e3e6f;
+        }
+
+        .main {
+            margin-left: 220px;
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .main h2 {
+            color: #2E5CAA;
+            border-bottom: 2px solid #2E5CAA;
+            padding-bottom: 10px;
+            font-weight: normal;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .add-button {
+            background-color: #2E5CAA;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .add-button:hover {
+            background-color: #1e3e6f;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #2E5CAA;
+            color: white;
+            font-weight: normal;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .popup-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+        }
+
+        .popup-content h3 {
+            margin-top: 0;
+            color: #2E5CAA;
+        }
+
+        .popup-content label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .popup-content input[type="text"],
+        .popup-content input[type="email"],
+        .popup-content input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .popup-content .button-group {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .popup-content button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            flex: 1;
+            margin: 5px;
+        }
+
+        .popup-content .btn-add {
+            background-color: #2E5CAA;
+            color: white;
+        }
+
+        .popup-content .btn-add:hover {
+            background-color: #1e3e6f;
+        }
+
+        .popup-content .btn-cancel {
+            background-color: #ddd;
+            color: #333;
+        }
+
+        .popup-content .btn-cancel:hover {
+            background-color: #ccc;
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                width: 100%;
+                height: auto;
+                position: static;
+            }
+
+            .main {
+                margin-left: 0;
+            }
+        }
+
+        /* Modify the select element */
+.popup-content select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    appearance: none; /* Remove default arrow */
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23333" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px top 50%;
+}
+
+/* Style the options */
+.popup-content select option {
+    background-color: #fff;
+    color: #333;
+}
+
+/* Hover effect on options */
+.popup-content select option:hover {
+    background-color: #f4f4f9;
+}
+
+/* Style the dropdown when it's open */
+.popup-content select:focus {
+    border-color: #2E5CAA;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(46, 92, 170, 0.2);
+}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Welcome, Agent!</h1>
+        <p>Agent Dashboard</p>
+    </div>
+
+    <div class="container">
+        <div class="nav">
+            <a href="#dashboard">Dashboard</a>
+            <!-- <a href="#users">Users</a>
+            <a href="#settings">Settings</a> -->
+            <a href="#logout" id="logout">Logout</a>
+        </div>
+
+        <div class="main">
+            <h2 id="dashboard-head">
+                Leads Table
+                <button class="add-button" onclick="openPopup()">+ New Lead</button>
+            </h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>ID</th>
+                        <th>Mobile</th>
+                        <th>Bank</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- User data will be appended here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="popup" id="popupForm">
+        <div class="popup-content">
+            <h3>Add User</h3>
+            <label for="bank">Select Bank:</label>
+            <select id="bank" name="bank">
+                <option value="IDFC">IDFC</option>
+                <option value="INDUSIND">INDUSIND</option>
+                <option value="Standard Chartered Bank">Standard Chartered Bank</option>
+                <option value="HSBC">HSBC</option>
+                <option value="Axis">Axis</option>
+                <option value="SBI">SBI</option>
+                <option value="BOB">BOB</option>
+                <option value="AU">AU</option>
+                <option value="HDFC">HDFC</option>
+                <option value="SBM Credilio">SBM Credilio</option>
+            </select>
+            <label for="mobile">Mobile Number:</label>
+            <input type="text" id="mobile" name="mobile" onkeyup="checkMobileNumber()">
+            <div class="button-group">
+                <button class="btn-add" onclick="addUser()" disabled style="display: none;" onclick="createLead()" id="btn-add"> Create Lead</button>
+                <button class="btn-cancel" onclick="closePopup()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openPopup() {
+            document.getElementById("popupForm").style.display = "flex";
+        }
+
+        function closePopup() {
+            document.getElementById("popupForm").style.display = "none";
+        }
+
+        function checkMobileNumber() {
+            var mobile = document.getElementById("mobile").value;
+            if (mobile.length == 10) {
+                document.getElementById("btn-add").disabled = false;
+                document.getElementById("btn-add").style.display = "block";
+            } else {
+                document.getElementById("btn-add").disabled = true;
+                document.getElementById("btn-add").style.display = "none";
+            }
+        }
+
+
+        async function addUser() {
+            const bank = document.getElementById("bank").value;
+            const mobile = document.getElementById("mobile").value;
+            const agentId = JSON.parse(localStorage.getItem("user_details"))._id;
+            const response = await fetch("/api/leads/create/" + agentId, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "ccBank": bank,
+                    "phone": mobile
+                })
+            });
+
+            if (response.ok) {
+                // alert("Lead Created Successfully");
+                fetchUsers(); // Refresh the table after adding a user
+                closePopup();
+                openBankUTMLink(bank);
+            } else {
+                alert("Error adding lead");
+            }
+        }
+
+
+        function openBankUTMLink(bank) {
+    const bankUrls = {
+        'IDFC': 'https://customer.credilio.in/credit-card/utm-broadcast/IDFC/?utm_advisor_code=CRD0127651',
+        'INDUSIND': 'https://customer.credilio.in/credit-card/utm-broadcast/INDUSIND/?utm_advisor_code=CRD0127651',
+        'Standard Chartered Bank': 'https://apply.standardchartered.co.in/credit-card/diy-journey-tps/?dt=%20credtps_43&CID=internal_edm_prb_mgm_feb24&utm_source=Credilio&utm_medium=Marketing&utm_content=CRD0127651',
+        'HSBC': 'https://customer.credilio.in/credit-card/utm-broadcast/HSBC/?utm_advisor_code=CRD0127651',
+        'Axis': 'https://customer.credilio.in/credit-card/utm-broadcast/AXIS/?utm_advisor_code=CRD0127651',
+        'SBI': 'https://customer.credilio.in/credit-card/utm-broadcast/SBI/?utm_advisor_code=CRD0127651',
+        'BOB': 'https://customer.credilio.in/credit-card/utm-broadcast/BANK_OF_BARODA/?utm_advisor_code=CRD0127651',
+        'AU': 'https://customer.credilio.in/credit-card/utm-broadcast/AU/?utm_advisor_code=CRD0127651',
+        'HDFC': 'https://applyonline.hdfcbank.com/cards/credit-cards.html?utm_content=DGPI&Channel=DSA&DSACode=XCDL&SMCode=D13209&LGCode=DGPI&LCCode=XCDL&LC2=SCDL132#nbb',
+        'SBM Credilio': 'https://customer.credilio.in/credit-card/utm-broadcast/sbm-credilio/?utm_advisor_code=CRD0127651'
+    };
+
+    const url = bankUrls[bank];
+    if (url) {
+        window.open(url, '_blank');
+    } else {
+        console.error('Bank not found.');
+    }
+}
+
+
+function getBankUTMLink(bank) {
+    const bankUrls = {
+        'IDFC': 'https://customer.credilio.in/credit-card/utm-broadcast/IDFC/?utm_advisor_code=CRD0127651',
+        'INDUSIND': 'https://customer.credilio.in/credit-card/utm-broadcast/INDUSIND/?utm_advisor_code=CRD0127651',
+        'Standard Chartered Bank': 'https://apply.standardchartered.co.in/credit-card/diy-journey-tps/?dt=%20credtps_43&CID=internal_edm_prb_mgm_feb24&utm_source=Credilio&utm_medium=Marketing&utm_content=CRD0127651',
+        'HSBC': 'https://customer.credilio.in/credit-card/utm-broadcast/HSBC/?utm_advisor_code=CRD0127651',
+        'Axis': 'https://customer.credilio.in/credit-card/utm-broadcast/AXIS/?utm_advisor_code=CRD0127651',
+        'SBI': 'https://customer.credilio.in/credit-card/utm-broadcast/SBI/?utm_advisor_code=CRD0127651',
+        'BOB': 'https://customer.credilio.in/credit-card/utm-broadcast/BANK_OF_BARODA/?utm_advisor_code=CRD0127651',
+        'AU': 'https://customer.credilio.in/credit-card/utm-broadcast/AU/?utm_advisor_code=CRD0127651',
+        'HDFC': 'https://applyonline.hdfcbank.com/cards/credit-cards.html?utm_content=DGPI&Channel=DSA&DSACode=XCDL&SMCode=D13209&LGCode=DGPI&LCCode=XCDL&LC2=SCDL132#nbb',
+        'SBM Credilio': 'https://customer.credilio.in/credit-card/utm-broadcast/sbm-credilio/?utm_advisor_code=CRD0127651'
+    };
+
+    return bankUrls[bank];
+    
+}
+
+
+async function fetchUsers() {
+    try {
+        let response = await fetch("/api/leads/getLeads/" + JSON.parse(localStorage.getItem("user_details"))._id, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (response.ok) {
+            let data = await response.json();
+            let tbody = document.querySelector("tbody");
+            tbody.innerHTML = ''; // Clear existing rows
+
+            console.log(data.data);
+
+            let masterData = data.data
+
+            console.log(masterData);
+            if (data.status === "success") {
+                console.log("Users:", masterData.length);
+                for (let i = 0; i < masterData.length; i++) {
+                    console.log("User:", masterData[i]);
+                    let user = masterData[i];
+                    let row = document.createElement("tr");
+                    let id = document.createElement("td");
+                    let bank = document.createElement("td");
+                    let mobile = document.createElement("td");
+                    let action = document.createElement("td");
+                    let status = document.createElement("td");
+                    let date = document.createElement("td");
+
+                    id.textContent = user._id;
+                    bank.textContent = user.customerDetails.ccBank;
+                    mobile.textContent = user.customerDetails.custMobile;
+                    status.textContent = user.leadLogs.status;
+                    date.textContent = new Date(user.createdAt).toLocaleString("en-US", { 
+                        timeZone: "Asia/Kolkata",
+                        year: "numeric",
+  month: "long",
+  day: "numeric",
+  hour: "numeric",
+  minute: "numeric",
+  hour12: true, });
+
+  if(user.leadLogs.status != "lead closed"){
+
+                    let button = document.createElement("button");
+                    button.textContent = "Open Link";
+                    button.classList.add("view-button");
+                    // button.style.display = "inline-block";
+                    
+                    button.addEventListener("click", () => {
+                        openBankUTMLink(user.customerDetails.ccBank);
+                    });
+
+                    // add close lead button
+                    let closeLeadButton = document.createElement("button");
+                    closeLeadButton.textContent = "Close Lead";
+                    closeLeadButton.classList.add("close-button");
+                    closeLeadButton.addEventListener("click", () => {
+                        closeLead(user._id);
+                    });
+                    action.appendChild(button);
+                    action.appendChild(closeLeadButton);
+                } else {
+                    
+                }
+                    row.appendChild(date);
+                    row.appendChild(id);
+                    row.appendChild(mobile);
+                    row.appendChild(bank);
+                    row.appendChild(status);
+                    row.appendChild(action);
+                    tbody.appendChild(row);
+                }
+            }
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+fetchUsers();
+
+
+document.getElementById("logout").addEventListener("click", function() {
+    localStorage.clear();
+    // clear cookies named page
+    // document.cookie = "page=loggedout";
+
+    alert("Logout Successful");
+
+    window.location.href = "/";
+  });
+
+  async function closeLead(id) {
+    try {
+        let response = await fetch("/api/leads/closeLead/" + id, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        if (response.ok) {
+            alert("Lead closed successfully");
+            fetchUsers();
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+
+  // check
+
+    </script>
+</body>
+</html>
